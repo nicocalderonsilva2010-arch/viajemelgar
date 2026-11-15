@@ -38,9 +38,10 @@
             <a href="#momentos">Momentos</a>
             <a href="#participantes">Participantes</a>
             <a href="#nexora-points">NEXORA Points</a>
-            <a href="#nexora-store">Tienda</a>
+            <a href="#nexora-market">NEXORA Market</a>
+            <a href="#nexora-store">NEXORA Store</a>
             <a href="#leaderboard">Ranking</a>
-            <a href="#actividades">Actividades</a>
+            <a href="#momentos">Actividades</a>
             <a href="#nosotros">Nosotros</a>
           </nav>
 
@@ -122,7 +123,8 @@
           <div class="section__header">
             <div>
               <p class="eyebrow">Galería</p>
-              <h2>Recuerdos compartidos</h2>
+              <h2>Recuerdos de este dispositivo</h2>
+              <p class="muted-copy">Fotos, videos de hasta 20 segundos y comentarios se guardan localmente; todavía no se sincronizan entre participantes.</p>
             </div>
           </div>
 
@@ -163,7 +165,7 @@
           </div>
         </section>
 
-        <section class="section" id="nexora-store">
+        <section class="section" id="nexora-market">
           <div class="section__header"><div><p class="eyebrow">NEXORA MARKET</p><h2>Una pieza para tu historia</h2><p class="muted-copy">Objetos únicos. Recuerdos hechos a tu medida.</p></div></div>
           <div class="market-layout">
             <aside class="merchant-card" id="merchantCard">
@@ -174,28 +176,14 @@
               <p class="eyebrow">GUARDIÁN DE PIEZAS EXTRAORDINARIAS</p>
               <h3>EL MERCADER<br />DE NEXORA</h3>
               <div class="merchant-dialogue" id="merchantDialogue" aria-live="polite">«Vaya, vaya... tenemos un nuevo visitante»</div>
-              <div class="market-auth" id="marketAuth">
-                <p>Inicia sesión para consultar tus monedas y tu inventario.</p>
-                <form id="marketAuthForm">
-                  <label for="marketEmail">Correo</label><input class="form-input" id="marketEmail" type="email" autocomplete="email" required placeholder="tu@correo.com" />
-                  <label for="marketPassword">Contraseña</label><input class="form-input" id="marketPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="Mínimo 8 caracteres" />
-                  <div class="market-auth-actions"><button class="button" type="submit" data-market-auth="login">Iniciar sesión</button><button class="button-ghost" type="submit" data-market-auth="signup">Crear cuenta</button></div>
-                </form>
-                <p class="market-status" id="marketStatus" role="status">Conecta Supabase para abrir el mercado.</p>
-              </div>
-              <button class="button-ghost market-signout hidden" id="marketSignout" type="button">Cerrar sesión</button>
+              <div class="market-local-profile"><label for="marketAccount">Perfil de muestra · no es una cuenta autenticada</label><select id="marketAccount" class="form-input"></select><p class="market-status" id="marketStatus" role="status">Saldos y compras locales, no sincronizados ni protegidos frente a cambios del navegador.</p></div>
             </aside>
             <div class="market-main">
               <div class="market-intro"><span>EDICIÓN MELGAR · 2026</span><span id="marketConnection">CONECTANDO CON EL MERCADO</span></div><p class="market-notice" id="marketNotice" role="status"></p>
               <div id="marketCatalog" class="store-grid"></div>
               <section class="market-inventory"><div class="market-subhead"><div><p class="eyebrow">COLECCIÓN PERSONAL</p><h3>Tu inventario</h3></div><span id="equippedLabel">Sin marco equipado</span></div><div id="marketInventory" class="inventory-grid"></div></section>
               <section class="market-history"><div class="market-subhead"><div><p class="eyebrow">MOVIMIENTOS</p><h3>Historial de monedas</h3></div></div><div id="marketHistory" class="market-history-list"></div></section>
-              <section class="market-admin hidden" id="marketAdmin"><div class="market-subhead"><div><p class="eyebrow">CONTROL DEL MERCADO</p><h3>Administración</h3></div></div>
-                <form id="marketItemForm" class="market-admin-form"><input id="marketItemName" class="form-input" required placeholder="Nombre del marco" /><input id="marketItemDescription" class="form-input" placeholder="Descripción" /><input id="marketItemPrice" class="form-input" required min="0" type="number" placeholder="Precio NC" /><select id="marketItemRarity" class="form-input"><option value="common">Common</option><option value="rare">Rare</option><option value="epic">Epic</option><option value="legendary">Legendary</option></select><button class="button" type="submit">Crear artículo</button></form>
-                <div id="marketAdminCatalog" class="market-admin-list"></div>
-                <div class="market-admin-grant"><select id="marketAdminUser" class="form-input" aria-label="Participante"></select><input id="marketCoinDelta" class="form-input" type="number" placeholder="Ajuste NC (+/-)" /><input id="marketCoinReason" class="form-input" placeholder="Motivo del ajuste" /><button id="marketGrantCoins" class="button-ghost" type="button">Registrar ajuste</button></div>
-                <div id="marketAdminInventory" class="market-admin-list"></div>
-              </section>
+              <section class="market-admin" id="marketAdmin"><div class="market-subhead"><div><p class="eyebrow">ADMINISTRACIÓN</p><h3>Privilegios reservados</h3></div></div><p>La cuenta propietaria preparada es <strong>manchi</strong>. Los controles administrativos se activarán al configurar autenticación segura; el modo local no concede privilegios.</p></section>
             </div>
           </div>
         </section>
@@ -203,6 +191,11 @@
         <section class="section" id="leaderboard">
           <div class="section__header"><div><p class="eyebrow">NEXORA RANKS</p><h2>Los más activos de Melgar</h2></div></div>
           <div class="panel"><div id="leaderboardList" class="leaderboard-list"></div></div>
+        </section>
+
+        <section class="section" id="nexora-store">
+          <div class="section__header"><div><p class="eyebrow">NEXORA POINTS</p><h2>NEXORA STORE</h2><p class="muted-copy">Canjea tus puntos del viaje por marcos para tus fotografías.</p></div></div>
+          <div class="panel"><div id="storeGrid" class="store-grid"></div></div>
         </section>
 
         <section class="section" id="momentos">
@@ -260,7 +253,7 @@
           <div class="about-layout">
             <div class="about-card">
               <div class="about-card__profile">
-                <img src="/images/team/elmanxy.png" alt="Nicolás — ElManxy" loading="lazy" decoding="async" />
+                <img src="%BASE_URL%images/team/elmanxy.png" alt="Nicolás — ElManxy" loading="lazy" decoding="async" />
               </div>
             </div>
 
@@ -308,7 +301,7 @@
               <div class="payment-methods">
                 <h3>Métodos de pago</h3>
                 <ul id="paymentMethods"></ul>
-                <button class="button" type="button">Realizar una donación</button>
+                <button class="button" type="button" disabled>Donaciones próximamente</button>
               </div>
 
               <div class="transparency-box">
@@ -318,14 +311,8 @@
             </div>
 
             <div class="admin-settings" style="margin-top: 20px;">
-              <h3>Panel administrativo</h3>
-              <form id="donationSettingsForm">
-                <input id="donationGoalInput" class="form-input" type="number" min="0" placeholder="Meta" />
-                <input id="donationRaisedInput" class="form-input" type="number" min="0" placeholder="Recaudado" />
-                <input id="donationMethodsInput" class="form-input" type="text" placeholder="Nequi, Daviplata, Transferencia bancaria" />
-                <textarea id="donationNoteInput" class="form-textarea" rows="3" placeholder="Descripción de uso de las donaciones"></textarea>
-                <button class="button" type="submit">Guardar</button>
-              </form>
+              <h3>Donaciones en preparación</h3>
+              <p>Los aportes estarán disponibles cuando se configuren los métodos de pago. No se están recibiendo pagos actualmente.</p>
             </div>
           </div>
         </section>

@@ -44,21 +44,14 @@ const defaultState = {
     },
   ],
   memories: [],
-  activities: [
-    { id: 'a1', title: 'Llegada al club', date: '12 Nov', description: 'Recibimos la bienvenida con un primer paseo por el lugar y la puesta en escena del viaje.' },
-    { id: 'a2', title: 'Atardecer y fotos', date: '13 Nov', description: 'El grupo se fue a los mejores puntos para capturar la luz y las risas.' },
-    { id: 'a3', title: 'Noche de fuego y música', date: '15 Nov', description: 'Velada con música, conversaciones largas y recuerdos inolvidables.' },
-  ],
-  messages: [
-    { id: 'mssg1', author: 'Nicolás', text: 'La mejor parte no fue el destino, sino la gente que lo hizo especial.' },
-    { id: 'mssg2', author: 'Sausalitoz Z9', text: 'Cada momento aquí se siente como una historia que merece ser guardada para siempre.' },
-  ],
+  activities: [],
+  messages: [],
   donations: {
-    goal: 2500000,
-    raised: 1825000,
-    count: 18,
-    methods: ['Nequi', 'Daviplata', 'Transferencia bancaria', 'Otro'],
-    note: 'Las donaciones son voluntarias y se usan para la logística, alimentación y organización del viaje.',
+    goal: 0,
+    raised: 0,
+    count: 0,
+    methods: [],
+    note: 'La información de donaciones todavía no está configurada.',
   },
   game: {
     activeParticipant: 'p1', profiles: {}, history: [],
@@ -225,12 +218,20 @@ function bindEvents() {
       const files = Array.from(app.fileInput.files || []);
       if (!files.length) return;
 
+      const acceptedFiles = [];
+      for (const file of files) {
+        if (file.type.startsWith('video/') && await getVideoDuration(file) > 20) {
+          window.alert(`${file.name}: los videos deben durar 20 segundos o menos.`);
+        } else acceptedFiles.push(file);
+      }
+      if (!acceptedFiles.length) return;
+
       const caption = app.memoryCaption?.value.trim() || 'Recuerdo del viaje';
       const tags = normalizeTags(app.memoryHashtags?.value || '');
       const participantId = app.memoryParticipant?.value || state.game.activeParticipant;
 
       const uploads = await Promise.all(
-        files.map(async (file, index) => {
+        acceptedFiles.map(async (file, index) => {
           const src = await readFileAsDataUrl(file);
           return {
             id: `upload-${Date.now()}-${index}`,
@@ -240,6 +241,7 @@ function bindEvents() {
             type: file.type.startsWith('video/') ? 'video' : 'image',
             caption,
             tags,
+            comments: [],
             approved: false,
             src,
             uploadedAt: new Date().toISOString(),
@@ -259,8 +261,14 @@ function bindEvents() {
         return;
       }
 
+      const previousMemories = state.memories;
       state.memories = [...uniqueUploads, ...state.memories];
-      persistState();
+      try { persistState(); }
+      catch {
+        state.memories = previousMemories;
+        window.alert('No hay espacio suficiente en el almacenamiento local para guardar estos archivos. No se publicaron.');
+        return;
+      }
       renderGallery();
       renderTimeline();
       renderGame();
@@ -282,10 +290,25 @@ function bindEvents() {
 
   document.addEventListener('click', (event) => {
     if (event.target.closest('[data-game-action]')) return;
+    if (event.target.closest('[data-memory-comment]')) return;
     const card = event.target.closest('[data-memory-id]');
     if (!card) return;
     const memory = state.memories.find((item) => item.id === card.dataset.memoryId);
     if (memory) openViewer(memory);
+  });
+
+  document.addEventListener('submit', (event) => {
+    const form = event.target.closest('[data-memory-comment]');
+    if (!form) return;
+    event.preventDefault();
+    const memory = state.memories.find((item) => item.id === form.dataset.memoryId);
+    const input = form.querySelector('input');
+    const text = input?.value.trim();
+    if (!memory || !text) return;
+    const previous = memory.comments || [];
+    memory.comments = [...previous, { author: state.participants.find((person) => person.id === app.memoryParticipant?.value)?.name || 'Participante', text, createdAt: new Date().toISOString() }];
+    try { persistState(); renderGallery(); }
+    catch { memory.comments = previous; window.alert('No se pudo guardar el comentario en este navegador.'); }
   });
 
   document.querySelectorAll('[data-close-modal]').forEach((button) => {
@@ -425,6 +448,7 @@ function approveMemory(memoryId) {
   memory.approved = true;
   const tagBonus = [...new Set(memory.tags || [])].reduce((sum, tag) => sum + (TAG_REWARDS[tag] || 0), 0);
   addPoints(memory.participantId || state.game.activeParticipant, 10 + tagBonus, `Foto aprobada · ${(memory.tags || []).map((tag) => `#${tag}`).join(' ') || 'sin hashtag'}`, 15);
+  window.nexoraMarketAward?.(10 + tagBonus, 'Fotografía aprobada', memory.ownerUserId || window.nexoraMarketUserId?.());
   persistState(); renderGallery(); renderGame();
 }
 
@@ -449,7 +473,9 @@ function claimMission(id) {
   const matching = state.memories.filter((photo) => photo.participantId === state.game.activeParticipant && photo.approved && (mission.kind === 'photos' || photo.tags?.includes(mission.kind))).length;
   if (mission.kind === 'secret' ? !state.memories.some((photo) => photo.participantId === state.game.activeParticipant && photo.approved && photo.tags?.includes('nexora')) : matching < mission.goal) return;
   profile.claimed.push(claimKey); addPoints(state.game.activeParticipant, mission.reward, `Misión · ${mission.title}`, mission.xp);
-  profile.badges.push(mission.title); persistState(); renderGame();
+  profile.badges.push(mission.title);
+  window.nexoraMarketAward?.(mission.reward, `Misión · ${mission.title}`, window.nexoraMarketUserId?.());
+  persistState(); renderGame();
 }
 
 function renderHero() {
@@ -509,6 +535,8 @@ function renderGallery() {
             </div>
             <p>${escapeHtml(memory.caption)}</p>
             <div class="memory-tags">${(memory.tags || []).map((tag) => `<span>#${escapeHtml(tag)}</span>`).join('')}</div>
+            <div class="memory-comments">${(memory.comments || []).map((comment) => `<p><strong>${escapeHtml(comment.author)}</strong> ${escapeHtml(comment.text)}</p>`).join('')}</div>
+            <form class="memory-comment-form" data-memory-comment data-memory-id="${escapeHtml(memory.id)}"><input class="form-input" aria-label="Comentar publicación" maxlength="240" placeholder="Añadir un comentario local"/><button class="button-ghost" type="submit">Comentar</button></form>
             ${memory.approved === false ? `<div class="pending-review"><span>Pendiente de revisión</span><button type="button" class="button-ghost" data-game-action="approve" data-id="${escapeHtml(memory.id)}">Aprobar · otorgar NP</button></div>` : ''}
           </div>
         </article>
@@ -529,7 +557,7 @@ function renderActivities() {
         </article>
       `
     )
-    .join('');
+    .join('') || '<div class="empty-state">Las actividades todavía no se han configurado.</div>';
 }
 
 function renderTimeline() {
@@ -548,7 +576,7 @@ function renderTimeline() {
         </div>
       `
     )
-    .join('');
+    .join('') || '<div class="empty-state">La línea de tiempo aparecerá cuando se publiquen recuerdos.</div>';
 }
 
 function renderMessages() {
@@ -562,14 +590,14 @@ function renderMessages() {
         </article>
       `
     )
-    .join('');
+    .join('') || '<div class="empty-state">Todavía no hay mensajes.</div>';
 }
 
 function renderDonations() {
   if (!app.donationGoal || !app.donationRaised || !app.donationProgress || !app.donationCount) return;
   const goal = Number(state.donations.goal || 0);
   const raised = Number(state.donations.raised || 0);
-  const progress = Math.min((raised / goal) * 100, 100);
+  const progress = goal > 0 ? Math.min((raised / goal) * 100, 100) : 0;
 
   app.donationGoal.textContent = formatCurrency(goal);
   app.donationRaised.textContent = formatCurrency(raised);
@@ -583,7 +611,7 @@ function renderDonations() {
 
   const methodsWrap = document.querySelector('#paymentMethods');
   if (methodsWrap) {
-    methodsWrap.innerHTML = state.donations.methods.map((method) => `<li>${escapeHtml(method)}</li>`).join('');
+    methodsWrap.innerHTML = state.donations.methods.length ? state.donations.methods.map((method) => `<li>${escapeHtml(method)}</li>`).join('') : '<li>Sin métodos configurados todavía.</li>';
   }
 }
 
@@ -629,9 +657,11 @@ function loadState() {
         .map((participant) => ({ ...participant, image: isLocalMediaSource(participant.image) ? participant.image : '' })),
       memories: (Array.isArray(parsed.memories) ? parsed.memories : structuredClone(defaultState.memories))
         .filter((memory) => isLocalMediaSource(memory.src)),
-      activities: Array.isArray(parsed.activities) ? parsed.activities : structuredClone(defaultState.activities),
-      messages: Array.isArray(parsed.messages) ? parsed.messages : structuredClone(defaultState.messages),
-      donations: { ...structuredClone(defaultState.donations), ...(parsed.donations || {}) },
+      activities: (Array.isArray(parsed.activities) ? parsed.activities : []).filter((activity) => !['a1', 'a2', 'a3'].includes(activity.id)),
+      messages: (Array.isArray(parsed.messages) ? parsed.messages : []).filter((message) => !['mssg1', 'mssg2'].includes(message.id)),
+      donations: parsed.donations?.goal === 2500000 && parsed.donations?.raised === 1825000 && parsed.donations?.count === 18
+        ? structuredClone(defaultState.donations)
+        : { ...structuredClone(defaultState.donations), ...(parsed.donations || {}) },
     };
   } catch (error) {
     return structuredClone(defaultState);
@@ -679,6 +709,17 @@ function readFileAsDataUrl(file) {
     reader.onload = () => resolve(String(reader.result));
     reader.onerror = reject;
     reader.readAsDataURL(file);
+  });
+}
+
+function getVideoDuration(file) {
+  return new Promise((resolve) => {
+    const url = URL.createObjectURL(file);
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.onloadedmetadata = () => { const duration = video.duration; URL.revokeObjectURL(url); resolve(Number.isFinite(duration) ? duration : Infinity); };
+    video.onerror = () => { URL.revokeObjectURL(url); resolve(Infinity); };
+    video.src = url;
   });
 }
 
