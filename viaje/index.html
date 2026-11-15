@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="NEXORA ESTUDIO & SAUSALITOZ Z9 — Álbum privado del viaje a Melgar, Colombia." />
+    <title>NEXORA ESTUDIO & SAUSALITOZ Z9</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="accessModal" class="access-modal">
+      <div class="access-modal__card">
+        <h2>NEXORA</h2>
+        <p>Este álbum es privado. Ingresa el código del viaje para entrar a la experiencia de Melgar.</p>
+        <form id="accessForm" class="access-form">
+          <input id="accessInput" class="form-input" type="password" placeholder="Código privado" aria-label="Código privado" />
+          <button class="button" type="submit">Entrar al álbum</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="siteShell" class="site-shell hidden">
+      <header class="topbar">
+        <div class="topbar__inner">
+          <div class="brand">
+            <div class="brand__mark">N</div>
+            <div class="brand__meta">
+              <p class="eyebrow">Álbum privado</p>
+              <h2>NEXORA</h2>
+            </div>
+          </div>
+
+          <nav class="nav" aria-label="Navegación principal">
+            <a href="#inicio">Inicio</a>
+            <a href="#galeria">Galería</a>
+            <a href="#momentos">Momentos</a>
+            <a href="#participantes">Participantes</a>
+            <a href="#nexora-points">NEXORA Points</a>
+            <a href="#nexora-store">Tienda</a>
+            <a href="#leaderboard">Ranking</a>
+            <a href="#actividades">Actividades</a>
+            <a href="#nosotros">Nosotros</a>
+          </nav>
+
+          <button class="topbar__action" type="button" data-scroll="galeria">Ver álbum</button>
+        </div>
+      </header>
+
+      <main class="page-shell">
+        <section id="inicio" class="hero">
+          <div class="hero__layout">
+            <div class="hero__content">
+              <p class="eyebrow">NEXORA ESTUDIO & SAUSALITOZ Z9</p>
+              <h1 id="tripTitle">MELGAR</h1>
+              <p id="tripTagline" class="hero__tagline">Un viaje, una historia y recuerdos que permanecerán.</p>
+
+              <div class="hero__meta">
+                <div class="meta-item">
+                  <span>Ubicación</span>
+                  <strong id="tripLocation">Club de la Policía, Melgar, Colombia</strong>
+                </div>
+                <div class="meta-item">
+                  <span>Fecha</span>
+                  <strong id="tripDate">20 de noviembre de 2026</strong>
+                </div>
+              </div>
+
+              <div class="trip-counter panel" aria-live="polite">
+                <p class="eyebrow" id="counterEyebrow">CUENTA REGRESIVA</p>
+                <h2 id="counterTitle">EL VIAJE COMIENZA EN...</h2>
+                <div class="counter-units" id="tripCounter"></div>
+                <p class="counter-note" id="counterNote">Hora oficial de Colombia · America/Bogota</p>
+              </div>
+
+              <div class="hero__actions">
+                <button class="button" type="button" data-scroll="galeria">Entrar al álbum</button>
+                <button class="button-ghost" type="button" data-scroll="donaciones">Apoya el proyecto</button>
+              </div>
+            </div>
+
+            <div class="hero__visual" aria-label="Viaje a Melgar, 20 de noviembre de 2026">
+              <div class="hero__art">
+                <p class="eyebrow">NEXORA ESTUDIO</p>
+                <strong>20</strong>
+                <span>NOVIEMBRE<br />2026</span>
+                <div class="hero__art-line"></div>
+                <p>Melgar, Colombia</p>
+              </div>
+              <div class="hero__overlay">
+                <strong>Viaje a Melgar</strong>
+                <b>Amigos, memoria y lugar.</b>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="participantes">
+          <div class="section__header">
+            <div>
+              <p class="eyebrow">Participantes</p>
+              <h2>Los que hacen este viaje especial</h2>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div id="participantsList" class="participants-grid"></div>
+
+            <form id="participantForm" class="participant-form">
+              <input id="participantName" class="form-input" type="text" placeholder="Nombre del participante" />
+              <input id="participantRole" class="form-input" type="text" placeholder="Rol / relación" />
+              <button class="button" type="submit">Agregar</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="section" id="galeria">
+          <div class="section__header">
+            <div>
+              <p class="eyebrow">Galería</p>
+              <h2>Recuerdos compartidos</h2>
+            </div>
+          </div>
+
+          <div class="panel">
+            <form id="uploadForm" class="upload-form">
+              <div class="upload-form__grid">
+                <label class="file-drop">
+                  <input id="fileInput" type="file" accept="image/*,video/*" multiple />
+                  <span>Selecciona fotos o videos del viaje</span>
+                </label>
+                <div>
+                  <div class="upload-fields">
+                    <textarea id="memoryCaption" class="form-textarea" rows="3" placeholder="Escribe una descripción para este recuerdo..."></textarea>
+                    <input id="memoryHashtags" class="form-input" placeholder="#Piscina #Amigos #Melgar" aria-label="Hashtags del recuerdo" />
+                    <label class="field-label" for="memoryParticipant">Publicar como</label>
+                    <select id="memoryParticipant" class="form-input"></select>
+                    <small>Las fotos nuevas quedan pendientes de revisión antes de recibir puntos.</small>
+                  </div>
+                </div>
+              </div>
+              <button class="button" type="submit">Publicar recuerdos</button>
+            </form>
+
+            <div id="galleryGrid" class="gallery-grid" style="margin-top: 20px;"></div>
+          </div>
+        </section>
+
+        <section class="section" id="nexora-points">
+          <div class="section__header"><div><p class="eyebrow">NEXORA POINTS</p><h2>Tu historia también suma</h2></div></div>
+          <div class="panel game-panel">
+            <div class="game-toolbar"><label for="activeParticipant">Perfil participante</label><select id="activeParticipant" class="form-input"></select><span class="local-mode">Modo local · solo este navegador</span></div>
+            <form id="tripSettingsForm" class="trip-settings"><label for="tripEndAt">Fin del viaje · hora de Colombia</label><input id="tripEndAt" class="form-input" type="datetime-local" /><button class="button-ghost" type="submit">Guardar fecha de cierre</button><small>La fecha queda vacía hasta que el administrador la configure.</small></form>
+            <div id="playerProfile" class="profile-card"></div>
+            <div class="game-columns">
+              <div><h3>NEXORA QUESTS</h3><p class="muted-copy">Cada día trae una nueva aventura.</p><div id="questList" class="quest-list"></div></div>
+              <div><h3>Actividad reciente</h3><div id="pointHistory" class="history-list"></div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="nexora-store">
+          <div class="section__header"><div><p class="eyebrow">NEXORA STORE</p><h2>Personaliza tus recuerdos</h2><p class="muted-copy">Personaliza tus recuerdos. Haz que cada fotografía sea única.</p></div></div>
+          <div class="panel"><div id="storeGrid" class="store-grid"></div></div>
+        </section>
+
+        <section class="section" id="leaderboard">
+          <div class="section__header"><div><p class="eyebrow">NEXORA RANKS</p><h2>Los más activos de Melgar</h2></div></div>
+          <div class="panel"><div id="leaderboardList" class="leaderboard-list"></div></div>
+        </section>
+
+        <section class="section" id="momentos">
+          <div class="section__header">
+            <div>
+              <p class="eyebrow">Momentos</p>
+              <h2>Actividades y recuerdos</h2>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div id="activityList" class="activity-grid"></div>
+          </div>
+        </section>
+
+        <section class="section" id="timeline">
+          <div class="section__header">
+            <div>
+              <p class="eyebrow">Línea de tiempo</p>
+              <h2>Lo vivido en orden</h2>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div id="timelineList" class="timeline"></div>
+          </div>
+        </section>
+
+        <section class="section" id="mensajes">
+          <div class="section__header">
+            <div>
+              <p class="eyebrow">Mensajes</p>
+              <h2>Palabras del viaje</h2>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div id="messagesList" class="comments-grid"></div>
+
+            <form id="messageForm" class="participant-form" style="margin-top: 18px;">
+              <input id="messageInput" class="form-input" type="text" placeholder="Escribe un recuerdo para el grupo..." />
+              <button class="button" type="submit">Enviar</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="section" id="nosotros">
+          <div class="section__header">
+            <div>
+              <p class="eyebrow">Nosotros</p>
+              <h2>Diseñado con intención</h2>
+            </div>
+          </div>
+
+          <div class="about-layout">
+            <div class="about-card">
+              <div class="about-card__profile">
+                <img src="/images/team/elmanxy.png" alt="Nicolás — ElManxy" loading="lazy" decoding="async" />
+              </div>
+            </div>
+
+            <div class="about-card">
+              <span class="about-card__meta">ElManxy</span>
+              <h3>Nicolás</h3>
+              <p class="about-card__meta" style="margin-top: 0;">Owner · Diseño y desarrollo web</p>
+              <p>Responsable de la identidad visual, diseño de producto y desarrollo de la experiencia digital de NEXORA.</p>
+              <div class="about-details">
+                <p>La dirección creativa de la marca, la narración visual y la experiencia del álbum fueron pensadas para que cada recuerdo del viaje se sienta auténtico, exclusivo y digno de guardar.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="donaciones">
+          <div class="donations">
+            <div class="donations__layout">
+              <div class="donation-hero">
+                <p class="eyebrow">Donaciones</p>
+                <h3>CADA APORTE CUENTA</h3>
+                <p>Este viaje lo construimos entre todos. Si quieres aportar para hacer de esta experiencia algo todavía más especial, puedes realizar una donación voluntaria. ¡Toda ayuda es bienvenida!</p>
+              </div>
+
+              <div class="donation-summary">
+                <div class="amount-row">
+                  <span>Recaudado</span>
+                  <strong id="donationRaised">$0</strong>
+                </div>
+                <div class="amount-row">
+                  <span>Meta</span>
+                  <strong id="donationGoal">$0</strong>
+                </div>
+                <div class="progress-bar">
+                  <div id="donationProgress" class="progress-bar__fill"></div>
+                </div>
+                <div class="donation-summary__meta">
+                  <span id="donationCount">0 donaciones</span>
+                  <span>Voluntario</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="donations__layout" style="margin-top: 20px;">
+              <div class="payment-methods">
+                <h3>Métodos de pago</h3>
+                <ul id="paymentMethods"></ul>
+                <button class="button" type="button">Realizar una donación</button>
+              </div>
+
+              <div class="transparency-box">
+                <h3>¿A dónde van las donaciones?</h3>
+                <p>Las donaciones ayudan a cubrir la logística del viaje, la alimentación, los materiales del recorrido y la organización del alojamiento y actividades del grupo. Todo es voluntario y transparente.</p>
+              </div>
+            </div>
+
+            <div class="admin-settings" style="margin-top: 20px;">
+              <h3>Panel administrativo</h3>
+              <form id="donationSettingsForm">
+                <input id="donationGoalInput" class="form-input" type="number" min="0" placeholder="Meta" />
+                <input id="donationRaisedInput" class="form-input" type="number" min="0" placeholder="Recaudado" />
+                <input id="donationMethodsInput" class="form-input" type="text" placeholder="Nequi, Daviplata, Transferencia bancaria" />
+                <textarea id="donationNoteInput" class="form-textarea" rows="3" placeholder="Descripción de uso de las donaciones"></textarea>
+                <button class="button" type="submit">Guardar</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer__line"></div>
+        <p><strong>DISEÑADO Y DESARROLLADO POR NEXORA</strong></p>
+        <p>ElManxy · Nicolás</p>
+        <p>NEXORA ESTUDIO & SAUSALITOZ Z9</p>
+      </footer>
+    </div>
+
+    <div id="viewerModal" class="viewer-modal hidden">
+      <div class="viewer-modal__content">
+        <div id="viewerContent"></div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
